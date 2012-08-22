@@ -134,7 +134,7 @@ void s2ram_add_quirks(char *s2ram_quirks)
 	if (strstr(s2ram_quirks, "vbe_post") != NULL)
 		flags |= VBE_POST;
 	if (strstr(s2ram_quirks, "vbe_save") != NULL)
-		flags |= VBE_POST;
+		flags |= VBE_SAVE;
 	if (strstr(s2ram_quirks, "vbe_mode") != NULL)
 		flags |= VBE_MODE;
 	if (strstr(s2ram_quirks, "radeon_off") != NULL)
