@@ -2146,7 +2146,8 @@ static int lock_vt(void)
 }
 
 /* Parse the command line and/or configuration file */
-static inline int get_config(int argc, char *argv[])
+//static inline 
+int get_config(int argc, char *argv[])
 {
 	static struct option options[] = {
 		   {
