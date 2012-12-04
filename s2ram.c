@@ -127,6 +127,8 @@ void s2ram_add_quirks(char *s2ram_quirks)
 {
 	int i;
 
+	fprintf(stderr,"madhu: s2ram_add_quirks: %s\n",s2ram_quirks);
+
 	/* Move to lowercase */
 	for (i=0; s2ram_quirks[i]; i++)
 		s2ram_quirks[i] = tolower(s2ram_quirks[i]);

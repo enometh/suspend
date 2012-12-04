@@ -377,6 +377,8 @@ static inline int get_config(int argc, char *argv[])
 		if (fail_missing_config) {
 			fprintf(stderr, "%s: Could not stat configuration file\n",
 				my_name);
+			fprintf(stderr, "madhu: config file=%s\n", conf_name);
+			perror("perror:");
 			return -ENOENT;
 		}
 	}

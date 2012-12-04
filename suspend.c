@@ -2205,10 +2205,15 @@ int get_config(int argc, char *argv[])
 		}
 	}
 
+	fprintf(stderr,"madhu: callin stat on %s\n", conf_name);
+	fflush (stderr);
+
 	if (stat(conf_name, &stat_buf)) {
 		if (fail_missing_config) {
 			fprintf(stderr, "%s: Could not stat configuration file\n",
 				my_name);
+			fprintf(stderr, "madhu: config file=%s\n", conf_name);
+			perror("perror:");
 			return -ENOENT;
 		}
 	}
@@ -2300,9 +2305,13 @@ int main(int argc, char *argv[])
 	} while (ret < 3);
 	close(ret);
 
+	fprintf(stderr,"madhu: calling get_config\n");
 	ret = get_config(argc, argv);
-	if (ret)
+	if (ret) {
+		fprintf(stderr,"madhu: get_config barfed\n");
 		return -ret;
+	}
+	fprintf(stderr,"madhu: get_config done, resume_device=%s\n",resume_dev_name);
 
 	if (compute_checksum != 'y' && compute_checksum != 'Y')
 		compute_checksum = 0;
@@ -2467,9 +2476,14 @@ int main(int argc, char *argv[])
 		return ret;
 	}
 
+	fprintf(stderr,"madhu: callin stat on <<%s>>\n", resume_dev_name);
+	fflush (stderr);
+
 	ret = 0;
 	if (stat(resume_dev_name, &stat_buf)) {
 		suspend_error("Could not stat the resume device file.");
+		fprintf(stderr, "madhu: resume device=%s\n", resume_dev_name);
+		perror("perror:");
 		ret = ENODEV;
 		goto Umount;
 	}
@@ -2549,8 +2563,13 @@ int main(int argc, char *argv[])
 
 #ifdef CONFIG_BOTH
 	/* If s2ram_hacks returns != 0, better not try to suspend to RAM */
-	if (s2ram) 
+	{int orig = s2ram;
+	if (s2ram)
 		s2ram = !s2ram_hacks();
+	if (orig != s2ram)
+	  suspend_error("madhu: s2ram hacks returned 0. not suspending");
+	}
+
 #endif
 #ifdef CONFIG_ENCRYPT
         if (do_encrypt && ! use_RSA)
@@ -2601,7 +2620,10 @@ Umount:
 		ret = errno;
 		suspend_error("Could not change directory to /");
 	} else {
-		umount(chroot_path);
+		int mret = umount(chroot_path);
+		if (mret < 0) {
+			suspend_error("madhu: umount %s failed:\n",chroot_path);
+		}
 	}
 
 	if (test_fd >= 0)

@@ -382,6 +382,10 @@ void s2ram_add_flag(int opt, const char *opt_arg)
 			break;
 		case 7:
 		case 'a':
+			fprintf(stderr, "madhu: s2ram_add_flag: %s, %d, result\n",
+			       opt_arg,
+			       atoi(opt_arg),
+			       (atoi(opt_arg) & (S3_BIOS | S3_MODE)));
 			flags |= (atoi(opt_arg) & (S3_BIOS | S3_MODE));
 			break;
 		case 8:
