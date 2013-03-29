@@ -2187,7 +2187,7 @@ int get_config(int argc, char *argv[])
 	int i, error;
 	char *conf_name = CONFIG_FILE;
 	const char *optstring = "hVf:s:o:r:P:";
-	struct stat stat_buf;
+	struct stat64 stat_buf;
 	int fail_missing_config = 0;
 
 	/* parse only config file argument */
@@ -2209,7 +2209,7 @@ int get_config(int argc, char *argv[])
 	fprintf(stderr,"madhu: callin stat on %s\n", conf_name);
 	fflush (stderr);
 
-	if (stat(conf_name, &stat_buf)) {
+	if (stat64(conf_name, &stat_buf)) {
 		if (fail_missing_config) {
 			fprintf(stderr, "%s: Could not stat configuration file\n",
 				my_name);
