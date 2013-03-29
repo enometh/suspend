@@ -4,7 +4,7 @@
  * (c) 2007 Tim Dijkstra
  */
 
-inline void open_printk(void);
-inline int get_kernel_console_loglevel(void);
-inline void set_kernel_console_loglevel(int level);
-inline void close_printk(void);
+void open_printk(void);
+int get_kernel_console_loglevel(void);
+void set_kernel_console_loglevel(int level);
+void close_printk(void);

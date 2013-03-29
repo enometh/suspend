@@ -16,7 +16,7 @@
 static FILE *printk_file;
 static int proc_mounted = 0;
 
-inline void open_printk(void)
+void open_printk(void)
 {
 	struct stat stat_buf;
 	char *procname = "/proc/sys/kernel/printk";
@@ -32,7 +32,7 @@ inline void open_printk(void)
         printk_file = fopen(procname, "r+");
 }
 
-inline int get_kernel_console_loglevel(void)
+int get_kernel_console_loglevel(void)
 {
         int level = -1;
 
@@ -43,7 +43,7 @@ inline int get_kernel_console_loglevel(void)
         return level;
 }
 
-inline void set_kernel_console_loglevel(int level)
+void set_kernel_console_loglevel(int level)
 {
         if (printk_file) {
                 rewind(printk_file);
@@ -53,7 +53,7 @@ inline void set_kernel_console_loglevel(int level)
 
 }
 
-inline void close_printk(void)
+void close_printk(void)
 {
         if (printk_file)
                 fclose(printk_file);
