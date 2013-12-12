@@ -112,7 +112,7 @@ static char use_threads;
 #define use_threads	0
 #endif
 
-static int suspend_swappiness = SUSPEND_SWAPPINESS;
+static int suspend_swappiness = 0/* SUSPEND_SWAPPINESS */; //madhu 131212
 static struct vt_mode orig_vtm;
 static int vfd;
 
@@ -2146,7 +2146,8 @@ static int lock_vt(void)
 }
 
 /* Parse the command line and/or configuration file */
-//static inline 
+//madhu: cannot be inline TODO
+//static inline
 int get_config(int argc, char *argv[])
 {
 	static struct option options[] = {
