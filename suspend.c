@@ -2440,10 +2440,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
-#ifndef CONFIG_BOTH
-	snprintf(chroot_path, MAX_STR_LEN, "/proc/%d", getpid());
-#else
 	/* If S3 resume fails /proc/<pid> never never gets unmounted. */
+	//snprintf(chroot_path, MAX_STR_LEN, "/proc/%d", getpid());
 	snprintf(chroot_path, MAX_STR_LEN, "/dev/shm/root", getpid());
 	{
 		struct stat buf;
@@ -2451,26 +2449,26 @@ int main(int argc, char *argv[])
 	check_directory:
 		if (lstat(chroot_path, &buf) == -1) {
 			ret = errno;
-			suspend_error("s2both:: Could not stat chroot target: %s.\n", chroot_path);
+			suspend_error("madhu: could not stat chroot target: %s.\n", chroot_path);
 			if (++ntries == 1) {
 				if (mkdir(chroot_path,0755) == -1) { 
-					suspend_error("s2both:: Could not mkdir chroot target: %s.\n", chroot_path);
+					suspend_error("madhu: could not mkdir chroot target: %s.\n", chroot_path);
 					ret = errno;
 					return ret;
 				}
-				fprintf(stderr, "s2both:: Checking created chroot target: %s.\n", chroot_path);
+				fprintf(stderr, "madhu: checking created chroot target: %s.\n", chroot_path);
 				goto check_directory;
 			}
-			suspend_error("s2both:: Could not create chroot target: %s.\n",chroot_path);
+			suspend_error("madhu: Could not create chroot target: %s.\n",chroot_path);
 			return ret;
 		} 
 		if (!S_ISDIR(buf.st_mode)) {
-			suspend_error("s2both:: Invalid chroot target: %s.\n", chroot_path);
+			suspend_error("Invalid chroot target: %s.\n", chroot_path);
 			ret = EINVAL;
 			return ret;
 		}
 	}
-#endif
+
 	if (mount("none", chroot_path, "tmpfs", 0, NULL)) {
 		ret = errno;
 		suspend_error("Could not mount tmpfs on %s.", chroot_path);
