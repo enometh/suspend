@@ -292,9 +292,13 @@ static int atomic_snapshot(int dev, int *in_suspend)
 {
 	int error;
 
+	fprintf(stderr, "calling atomic_snapshot: SNAPSHOT_CREATE_IMAGE\n", error);
 	error = ioctl(dev, SNAPSHOT_CREATE_IMAGE, in_suspend);
-	if (error && errno == ENOTTY)
+	fprintf(stderr, "atomic_snapshot: SNAPSHOT_CREATE_IMAGE: %d\n", error);
+	if (error && errno == ENOTTY) {
 		error = ioctl(dev, SNAPSHOT_ATOMIC_SNAPSHOT, in_suspend);
+		fprintf(stderr, "atomic_snapshot (enotty): SNAPSHOT_ATOMIC_SNAPSHOT: %d\n", error);
+	}
 	return error;
 }
 
@@ -307,9 +311,15 @@ static int set_image_size(int dev, loff_t size)
 {
 	int error;
 
+	printf("MADHU: set_image_size(%d,%d) call SNAPSHOT_PREF_IMAGE_SIZE\n",
+	       dev, size);
 	error = ioctl(dev, SNAPSHOT_PREF_IMAGE_SIZE, size);
-	if (error && errno == ENOTTY)
+	printf("MADHU: SNAPSHOT_PREF_IMAGE_SIZE: ret %d\n", error);
+	if (error && errno == ENOTTY) {
+		printf("MADHU: call: set_image_size enotty call SNAPSHOT_SET_IMAGE_SIZE\n");
 		error = ioctl(dev, SNAPSHOT_SET_IMAGE_SIZE, size);
+		printf("MADHU: call: set_SNAPSHOT_SET_IMAGE_SIZE ret %d\n", error);
+	}
 	return error;
 }
 
@@ -1729,10 +1739,14 @@ int suspend_system(int snapshot_fd, int resume_fd, int test_fd)
 	attempts = 2;
 	do {
 		if (set_image_size(snapshot_fd, image_size)) {
+			printf("\e[13]");
+			printf("MADHU: set_image_size failed\n");
 			error = errno;
 			break;
 		}
 		if (atomic_snapshot(snapshot_fd, &in_suspend)) {
+			printf("\e[13]");
+			printf("MADHU: atomic_snapshot failed\n");
 			error = errno;
 			break;
 		}
@@ -1746,6 +1760,8 @@ int suspend_system(int snapshot_fd, int resume_fd, int test_fd)
 
 		error = write_image(snapshot_fd, resume_fd, -1);
 		if (error) {
+			printf("\e[13]");
+			printf("MADHU: write_image failed\n");
 			free_swap_pages(snapshot_fd);
 			free_snapshot(snapshot_fd);
 			image_size = 0;
