@@ -480,12 +480,15 @@ int main(int argc, char *argv[])
 	* 30 seconds grace period to allow resume device
 	* to come online (i.e. external USB drive)
 	*/
+
+	fprintf(stderr, "waiting for device %s: ", resume_dev_name);
 	for (n = 0; n < STAT_LOOP_STEPS; n++) {
+	    if (n % 10 == 0) fprintf(stderr, ".");
 	    if (!stat(resume_dev_name, &stat_buf))
 		break;
 	    usleep(STAT_TIMEOUT_US);
 	}
-
+	fprintf(stderr, " done\n");
 
 	while (stat(resume_dev_name, &stat_buf)) {
 		fprintf(stderr, 
